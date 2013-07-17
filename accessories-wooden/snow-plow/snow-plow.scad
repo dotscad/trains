@@ -1,32 +1,30 @@
-/*
- * http://www.thingiverse.com/thing:87677
+/**
+ * Snow Plow Accessory designed for Brio/Thomas style wooden trains.
  *
- * Snow plow attachment designed for Brio/Thomas style wooden trains.
+ * @copyright  Chris Petersen, 2013
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
- * This vertical-print version is designed to look more like the plow on the
- * "Adventures of Thomas" train than the original pattern (thing:54071).  It
- * also has a tilted-up bottom edge of the blade to hopefully prevent it from
- * getting stuck when the toy train goes down a slope.
+ * @see        http://www.thingiverse.com/thing:87677
+ * @source     https://github.com/dotscad/trains/tree/master/accessories-wooden/snow-plow/
  *
- * The vertical printing alignment is designed to allow for the tilted bottom
- * edge, but also means that I was unable to print the tabs designed for the
- * original pattern to hold this onto the train.  Thus, you will have to use
- * the mounting-magnet cavity in order to use this accessory effectively with
- * your child's trains.  Just insert the magnet (after double-checking polarity)
- * and glue it into place with epoxy or by manually extruding plastic into the
- * hole.
+ * This is designed to look more like the plow on the "Adventures of Thomas" train than
+ * a real snow plow.  The tilted-up bottom edge of the blade is required to prevent it
+ * from getting stuck when the toy train goes down a slope.
  *
- * Mounting-magnet dimensions are based on:
+ * Though I've found that this will stay connected to many trains without assistance, I
+ * have left enough room inside of the magnet cavity to glue in a small ceramic magnet
+ * like the ones available here:
  *
  *   http://www.cherrytreetoys.com/Ceramic-Magnet-P3616.aspx
  *
- * Copyright 2013 to Chris Petersen
- * License: http://creativecommons.org/licenses/by-sa/3.0/
+ * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
+ * project, an open collection of modules and Things for 3d printing.
  *
- * Find the latest versions of this and other related designs at:
- *
- *   https://github.com/ex-nerd/3d
  */
+
+//
+// Customizer parameters and rendering
+//
 
 /* [Global] */
 
@@ -35,10 +33,13 @@ support = true;
 
 /* [Hidden] */
 
-/*
- * Render the snow plow
- */
-module plow($fn=75) {
+snow_plow();
+
+//
+// Module code below:
+//
+
+module snow_plow($fn=75) {
     // Basic configuration
     w = 25.4; // Width of plow
     h = 22; // Height of plow
@@ -143,5 +144,3 @@ module plow($fn=75) {
         }
     }
 }
-
-plow();
