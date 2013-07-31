@@ -2,9 +2,9 @@
 
 Joiner clip for wooden toy train track, similar to SureTrack.
 
-## screenshot
+## what does it look like?
 
-![track-clip.scad screenshot](https://raw.github.com/dotscad/trains/master/accessories-wooden/track-clip/screenshot.png)
+### [Click here for an interactive 3d model](https://github.com/dotscad/trains/blob/master/accessories-wooden/track-clip/track-clip.stl)
 
 ## dotscad
 
