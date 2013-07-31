@@ -12,11 +12,9 @@ like the ones available here:
 
   http://www.cherrytreetoys.com/Ceramic-Magnet-P3616.aspx
 
-## screenshot
+## what does it look like?
 
-![screenshot](https://raw.github.com/dotscad/trains/master/accessories-wooden/snow-plow/screenshot.png)
-
-## photo
+### [Click here for an interactive 3d model](https://github.com/dotscad/trains/blob/master/accessories-wooden/snow-plow/snow-plow.stl)
 
 ![photo](https://raw.github.com/dotscad/trains/master/accessories-wooden/snow-plow/photo.jpg)
 
