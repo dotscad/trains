@@ -31,5 +31,5 @@ family:
       track, or even different types of toy (e.g. Lego).
 
 Within each category, each Thing is organized into its own directory, where you will
-find the necessary .scad file(s) along with the README, an OpenSCAD screenshot, and
-possibly a photo of the printed item.
+find the necessary .scad file(s) along with the README, a rendered STL file which you can
+interact examime directly in github, and possibly a photo of the printed item.
