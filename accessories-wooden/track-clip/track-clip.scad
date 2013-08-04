@@ -19,7 +19,7 @@
 
 /* [Global] */
 
-// Pinch angle (0 is vertical).  Adjust as needed for plastic strength so that it's  easy to get on/off but still holds firmly to track.
+// Pinch angle (0 is vertical).  Adjust as needed for plastic strength so that it's easy to get on/off but still holds firmly to track.  7 works well for PLA.
 pinch_angle = 7; // [0:15]
 
 /* [Hidden] */
