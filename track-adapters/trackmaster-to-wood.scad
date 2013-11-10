@@ -34,8 +34,6 @@ render_female = true;
 
 // Render the part(s)
 trackmaster_to_wood(length, render_male, render_female);
-//translate([30,60,10]) wood_track(5);
-//translate([30,10,10]) wood_track(20);
 
 /* ******************************************************************************
  * Main module code below:

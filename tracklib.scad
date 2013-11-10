@@ -86,52 +86,61 @@ module plug_cutout(radius, neck_length) {
  * ****************************************************************************** */
 
 /**
- * Individual piece of wooden track.  Same gauge as Trackmaster but not the same shape.
- * @param int l Length of track to render.  Standard short wooden length is 53.5mm
+ * 2d shape for basic wooden track.  To be used with linear_extrude() and rotate_extrude().
  */
-module wood_track(length) {
+module wood_track_2d() {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
     bevel_pad = bevel_width*sqrt(.5)*(o/2);
     assign(bevel_length = length + 2 * o)
     difference() {
-        cube(size = [length,wood_width(),wood_height()]);
+        square(size = [wood_width(),wood_height()]);
         // Wheel wells
         for (i = [well_padding, wood_width() - well_padding - well_width]) {
-            translate(v=[-o,i,wood_well_height()]) {
-                cube(size = [length+o+o,well_width,wood_height()-wood_well_height()+o]);
+            translate(v=[i,wood_well_height()]) {
+                square([well_width,wood_height()-wood_well_height()+o]);
             }
         }
         // Bevels on wheel wells
         for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
             // top side
-            translate(v=[length/2,i,wood_height() + bevel_pad]) {
-                rotate(a=[45,0,0]) {
-                    cube(size = [bevel_length,bevel,bevel], center=true);
+            translate(v=[i,wood_height() + bevel_pad]) {
+                rotate(a=[0,0,45]) {
+                    square([bevel,bevel], center=true);
                 }
             }
-            // outer faces
+        }
+        // Bevels on the track sides
+        for (i=[ [-bevel_pad,wood_height()+bevel_pad], [wood_width()+bevel_pad,-bevel_pad], [-bevel_pad,-bevel_pad], [wood_width()+bevel_pad,wood_height()+bevel_pad] ]) {
+            translate(v=i) {
+                rotate(a=[0,0,45]) {
+                    square([bevel,bevel], center=true);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Individual piece of wooden track.  Same gauge as Trackmaster but not the same shape.
+ * @param int length Length of track to render.  Standard short wooden length is 53.5mm.
+ */
+module wood_track(length=53.5) {
+    well_width   = wood_well_width();
+    well_spacing = wood_well_spacing();
+    well_padding = (wood_width() - well_spacing - (2*well_width))/2;
+    bevel_pad = bevel_width*sqrt(.5)*(o/2);
+    assign(bevel_length = length + 2 * o)
+    difference() {
+        rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
+        // Bevels on outer faces of the wheel wells
+        for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
             for (j=[-bevel_pad,length+bevel_pad]) {
                 translate(v=[j,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
                     rotate(a=[0,0,45]) {
                         cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
                     }
-                }
-            }
-        }
-        // Bevels on the track sides
-        for (i=[ [length/2,-bevel_pad,wood_height()+bevel_pad], [length/2,wood_width()+bevel_pad,-bevel_pad] ]) {
-            translate(v=i) {
-                rotate(a=[45,0,0]) {
-                    cube(size = [bevel_length,bevel,bevel], center=true);
-                }
-            }
-        }
-        for (i=[ [length/2,-bevel_pad,-bevel_pad], [length/2,wood_width()+bevel_pad,wood_height()+bevel_pad] ]) {
-            translate(v=i) {
-                rotate(a=[-45,0,0]) {
-                    cube(size = [bevel_length,bevel,bevel], center=true);
                 }
             }
         }
