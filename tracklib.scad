@@ -3,6 +3,10 @@
  * primarily on Thomas- and Brio-compatible wooden trains, as well as Thomas Trackmaster
  * (motorized plastic) and Take-N-Play (die cast).
  *
+ * Some functions in this library require other [dotscad](https://github.com/dotscad/)
+ * files.  I would recommend cloning that repository into the same parent directory
+ * that contains this repository.
+ *
  * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
  * project, an open collection of modules and Things for 3d printing.  Please check there
  * for the latest versions of this and other related files.
@@ -38,6 +42,16 @@ function trackmaster_plug_neck_length() = 4.75;
 // Bevel size
 bevel_width = 1;
 bevel = o + bevel_width;
+
+/* ******************************************************************************
+ * Include some other libraries
+ * ****************************************************************************** */
+
+// Not sure where the main dotscad files might be, so try to load from a few locations.
+use <../../dotscad/pie.scad>;
+use <../dotscad/pie.scad>;
+use <dotscad/pie.scad>;
+use <pie.scad>;
 
 /* ******************************************************************************
  * Examples
@@ -167,6 +181,39 @@ module wood_track(length=53.5) {
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * Individual piece of wooden track, curved along an arc.
+ * @param int radius Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
+ * @param int angle  Angle of track to render.  Standard track angle is 45 degrees.
+ */
+module wood_track_arc(radius = 245/2, angle=45) {
+    well_width   = wood_well_width();
+    well_spacing = wood_well_spacing();
+    well_padding = (wood_width() - well_spacing - (2*well_width))/2;
+    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    difference() {
+        intersection() {
+            pie(radius + wood_width(), angle, wood_height());
+            rotate_extrude(convexity = 10)
+                translate([radius,0,0])
+                wood_track_2d();
+        }
+        // Bevels on outer faces of the wheel wells
+        for (a=[0,angle]) {
+            rotate([0,0,a])
+                translate([radius,0,0])
+                rotate([0,0,-90])
+                for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
+                    translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                        rotate(a=[0,0,45]) {
+                            cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                        }
+                    }
+                }
         }
     }
 }
