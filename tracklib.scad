@@ -70,7 +70,8 @@ module tracklib_example($fn=25) {
     translate([15,10,0]) difference() {
        translate([0,-wood_plug_radius()-2]) cube([wood_plug_neck_length() + wood_plug_radius() + 2, wood_plug_radius() * 2 + 4, wood_height()]);
         wood_cutout();
-     }
+    }
+    translate([-5,-10,0]) rotate([0,0,90]) wood_track_arc(10, 25, $fn=100);
     // Trackmaster pieces
     translate([40,30,0]) trackmaster_plug();
     translate([40,10,0]) difference() {
