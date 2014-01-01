@@ -8,10 +8,15 @@
  * design but the now-default solid version looks better and actually uses quite a bit
  * less filament (5-15% less for 25-15% infill).
  *
- * This openSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
- * project.
+ * To render this shape, you will need
+ * [tracklib.scad](http://www.thingiverse.com/thing:216915) installed in the same
+ * directory as this file, or the [dotscad/trains](https://github.com/dotscad/trains)
+ * repository cloned in its entirety (which will include this file and tracklib.scad).
  *
- * @copyright  Chris Petersen, 2013
+ * This openSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
+ * project.  Please check there for the latest versions of this and other related files.
+ *
+ * @copyright  Chris Petersen, 2014
  * @license    http://creativecommons.org/licenses/LGPL/2.1/
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
@@ -20,7 +25,8 @@
  */
 
 /* ******************************************************************************
- * Customizer parameters and rendering
+ * Thingiverse Customizer parameters and rendering.
+ * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
 /* [Global] */
