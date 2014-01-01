@@ -1,13 +1,12 @@
 /**
- * trackmaster-to-wood.scad
- *
  * An adapter to connect Thomas Trackmaster plastic track to Thomas- and Brio-compatible
  * wooden train track.
  *
- * This openSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
- * project.
+ * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
+ * project, an open collection of modules and Things for 3d printing.  Please check there
+ * for the latest versions of this and other related files.
  *
- * @copyright  Chris Petersen, 2013
+ * @copyright  Chris Petersen, 2014
  * @license    http://creativecommons.org/licenses/LGPL/2.1/
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
@@ -16,7 +15,8 @@
  */
 
 /* ******************************************************************************
- * Customizer parameters and rendering
+ * Thingiverse Customizer parameters and rendering.
+ * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
 /* [Global] */

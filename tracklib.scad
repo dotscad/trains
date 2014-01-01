@@ -1,12 +1,11 @@
 /**
- * tracklib.scad
- *
  * A library of modules for creating parts compatible with toy trains (currently focused
  * primarily on Thomas- and Brio-compatible wooden trains, as well as Thomas Trackmaster
  * (motorized plastic) and Take-N-Play (die cast).
  *
- * This openSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
- * project.  Please check there for the latest versions of this and other related files.
+ * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
+ * project, an open collection of modules and Things for 3d printing.  Please check there
+ * for the latest versions of this and other related files.
  *
  * @copyright  Chris Petersen, 2014
  * @license    http://creativecommons.org/licenses/LGPL/2.1/

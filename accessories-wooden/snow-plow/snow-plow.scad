@@ -1,12 +1,6 @@
 /**
  * Snow Plow Accessory designed for Brio/Thomas style wooden trains.
  *
- * @copyright  Chris Petersen, 2013
- * @license    http://creativecommons.org/licenses/by-sa/3.0/
- *
- * @see        http://www.thingiverse.com/thing:87677
- * @source     https://github.com/dotscad/trains/tree/master/accessories-wooden/snow-plow/
- *
  * This is designed to look more like the plow on the "Adventures of Thomas" train than
  * a real snow plow.  The tilted-up bottom edge of the blade is required to prevent it
  * from getting stuck when the toy train goes down a slope.
@@ -18,8 +12,15 @@
  *   http://www.cherrytreetoys.com/Ceramic-Magnet-P3616.aspx
  *
  * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
- * project, an open collection of modules and Things for 3d printing.
+ * project, an open collection of modules and Things for 3d printing.  Please check there
+ * for the latest versions of this and other related files.
  *
+ * @copyright  Chris Petersen, 2014
+ * @license    http://creativecommons.org/licenses/LGPL/2.1/
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/
+ *
+ * @see        http://www.thingiverse.com/thing:87677
+ * @source     https://github.com/dotscad/trains/tree/master/accessories-wooden/snow-plow/
  */
 
 //

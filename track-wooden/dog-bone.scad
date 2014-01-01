@@ -1,8 +1,5 @@
 /**
- * dog-bone.scad
- *
- * A simple dog-bone (male-male) connector for Thomas- and Brio-compatible wooden train
- * track.
+ * Dog-bone (male-male) connector for Thomas- and Brio-compatible wooden train track.
  *
  * This renders in "solid" and "spring" variations.  The spring version is the original
  * design but the now-default solid version looks better and actually uses quite a bit
@@ -13,8 +10,9 @@
  * directory as this file, or the [dotscad/trains](https://github.com/dotscad/trains)
  * repository cloned in its entirety (which will include this file and tracklib.scad).
  *
- * This openSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
- * project.  Please check there for the latest versions of this and other related files.
+ * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
+ * project, an open collection of modules and Things for 3d printing.  Please check there
+ * for the latest versions of this and other related files.
  *
  * @copyright  Chris Petersen, 2014
  * @license    http://creativecommons.org/licenses/LGPL/2.1/
