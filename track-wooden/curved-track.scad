@@ -1,5 +1,6 @@
 /**
- * Curved piece of track for Thomas- and Brio-compatible wooden train track.
+ * Parametric module to create a curved piece of track for Thomas- and Brio-compatible
+ * wooden train track.
  *
  * To render this shape, you will need
  * [tracklib.scad](http://www.thingiverse.com/thing:216915) installed in the same

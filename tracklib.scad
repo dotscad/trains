@@ -1,7 +1,7 @@
 /**
- * A library of modules for creating parts compatible with toy trains (currently focused
- * primarily on Thomas- and Brio-compatible wooden trains, as well as Thomas Trackmaster
- * (motorized plastic) and Take-N-Play (die cast).
+ * A parametric library of modules for creating parts compatible with toy trains
+ * (currently focused primarily on Thomas- and Brio-compatible wooden trains, as well as
+ * Thomas Trackmaster (motorized plastic) and Take-N-Play (die cast).
  *
  * Some functions in this library require other [dotscad](https://github.com/dotscad/)
  * files.  I would recommend cloning that repository into the same parent directory

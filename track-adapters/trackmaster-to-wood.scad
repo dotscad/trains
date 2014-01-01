@@ -2,6 +2,11 @@
  * An adapter to connect Thomas Trackmaster plastic track to Thomas- and Brio-compatible
  * wooden train track.
  *
+ * To render this shape, you will need
+ * [tracklib.scad](http://www.thingiverse.com/thing:216915) installed in the same
+ * directory as this file, or the [dotscad/trains](https://github.com/dotscad/trains)
+ * repository cloned in its entirety (which will include this file and tracklib.scad).
+ *
  * This OpenSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
  * project, an open collection of modules and Things for 3d printing.  Please check there
  * for the latest versions of this and other related files.
