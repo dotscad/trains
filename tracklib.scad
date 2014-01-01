@@ -6,13 +6,13 @@
  * (motorized plastic) and Take-N-Play (die cast).
  *
  * This openSCAD library is part of the [dotscad](https://github.com/dotscad/dotscad)
- * project.
+ * project.  Please check there for the latest versions of this and other related files.
  *
- * @copyright  Chris Petersen, 2013
+ * @copyright  Chris Petersen, 2014
  * @license    http://creativecommons.org/licenses/LGPL/2.1/
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @see        http://www.thingiverse.com/thing:?????
+ * @see        http://www.thingiverse.com/thing:216915
  * @source     https://github.com/dotscad/trains/blob/master/tracklib.scad
  */
 
@@ -20,25 +20,51 @@
 o = .1;
 
 // Constants for wooden track parts:
-function wood_width()        = 40;
-function wood_height()       = 12;
-function wood_well_height()  = 9;
-function wood_well_width()   = 5.7;
-function wood_well_spacing() = 19.25;
-function wood_plug_radius()  = 6;
-// @todo wood_plug_neck_length() = 10.75 (and apply to wood_plug() module)
+function wood_width()            = 40;
+function wood_height()           = 12;
+function wood_well_height()      = 9;
+function wood_well_width()       = 5.7;
+function wood_well_spacing()     = 19.25;
+function wood_plug_radius()      = 6;
+function wood_plug_neck_length() = 12;
 
 // Constants for trackmaster parts
-function trackmaster_width()       = 40;
-function trackmaster_height()      = 12;
-function trackmaster_well_height() = 8.4;
-function trackmaster_plug_radius() = 3.8;
-// @todo trackmaster_plug_neck_length() = 5 (and apply to trackmaster_plug() module)
+function trackmaster_width()            = 40;
+function trackmaster_height()           = 12;
+function trackmaster_well_height()      = 8.4;
+function trackmaster_plug_radius()      = 3.8;
+function trackmaster_plug_neck_length() = 4.75;
 
 // @todo need to figure out what to call these variables...
 // Bevel size
 bevel_width = 1;
 bevel = o + bevel_width;
+
+/* ******************************************************************************
+ * Examples
+ * ****************************************************************************** */
+
+/*
+ * When this file is opened directly in OpenSCAD, the following code will render an
+ * example of the functions it provides.  This example will *not* render if this module
+ * is imported into your own project via the `use` statement.
+ */
+tracklib_example();
+module tracklib_example($fn=25) {
+    // Wood pieces
+    wood_track(10);
+    translate([15,30,0]) wood_plug();
+    translate([15,10,0]) difference() {
+       translate([0,-wood_plug_radius()-2]) cube([wood_plug_neck_length() + wood_plug_radius() + 2, wood_plug_radius() * 2 + 4, wood_height()]);
+        wood_cutout();
+     }
+    // Trackmaster pieces
+    translate([40,30,0]) trackmaster_plug();
+    translate([40,10,0]) difference() {
+       translate([0,-trackmaster_plug_radius()-2]) cube([trackmaster_plug_neck_length() + trackmaster_plug_radius() + 2, trackmaster_plug_radius() * 2 + 4, trackmaster_height()]);
+       trackmaster_cutout();
+    }
+}
 
 /* ******************************************************************************
  * Modules useful to all varieties of train/track parts
@@ -50,27 +76,27 @@ bevel = o + bevel_width;
  * @param float radius      Radius of the cutout (recommended .3-.8 larger than plug)
  * @param float neck_length Length of the post's neck (edge of track to center of round cutout)
  */
-module plug_cutout(radius, neck_length) {
+module plug_cutout(radius, neck_length, track_height) {
     bevel_pad    = sqrt(.5)*(o/2);
     bevel_height = sqrt(.5)*(bevel_width+o);
     bevel_radius = bevel_height-bevel_pad;
     height_pad   = sqrt(.5)*(bevel_width/2);
     union() {
         translate(v=[-o,-3.75,-o]) {
-            cube(size=[o+neck_length,7.5,wood_height()+o+o]);
+            cube(size=[o+neck_length,7.5,track_height+o+o]);
         }
-        translate(v=[neck_length,0,wood_height()/2]) {
-            cylinder(h=wood_height()+o+o,r=radius, center=true);
+        translate(v=[neck_length,0,track_height/2]) {
+            cylinder(h=track_height+o+o,r=radius, center=true);
         }
         // bevelled edges
-        translate(v=[neck_length,0,wood_height()-height_pad]) {
-            cylinder(h=bevel_height,r1=radius-bevel_pad, r2=radius+bevel_radius, center=true);
+        translate(v=[neck_length,0,track_height+o-height_pad]) {
+            cylinder(h=bevel_height+o,r1=radius-bevel_pad, r2=radius+bevel_radius, center=true);
         }
-        translate(v=[neck_length,0,height_pad]) {
-            cylinder(h=bevel_height,r1=radius+bevel_radius,r2=radius-bevel_pad, center=true);
+        translate(v=[neck_length,0,height_pad-o]) {
+            cylinder(h=bevel_height+o,r1=radius+bevel_radius,r2=radius-bevel_pad, center=true);
         }
         for (i=[ 3.75-bevel_pad, -3.75+bevel_pad ]) {
-            for (j=[ wood_height()+bevel_pad, -bevel_pad ]) {
+            for (j=[ track_height+bevel_pad, -bevel_pad ]) {
                 translate(v=[(neck_length-o)/2,i,j]) {
                     rotate(a=[45,0,0]) {
                         cube(size = [o+neck_length,bevel,bevel], center=true);
@@ -78,6 +104,7 @@ module plug_cutout(radius, neck_length) {
                 }
             }
         }
+        // @todo if track_height < wood_height() then extend cylinder and edges upward to wood_height() so plug is properly subtracted from wood track
     }
 }
 
@@ -93,7 +120,7 @@ module wood_track_2d() {
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
     bevel_pad = bevel_width*sqrt(.5)*(o/2);
-    assign(bevel_length = length + 2 * o)
+    assign(bevel_length = 2 * o)
     difference() {
         square(size = [wood_width(),wood_height()]);
         // Wheel wells
@@ -151,19 +178,20 @@ module wood_track(length=53.5) {
  * Plug (male) for wooden track, centered on its y axis.
  * @param bool solid Render as a solid plug, or set to false for the "spring" variant.
  */
-module wood_plug(solid=true, $fn=50) {
+module wood_plug(solid=true) {
+    neck_length = wood_plug_neck_length();
     // The width of the post depends on whether this is a "solid" or "spring" plug
     post_w = solid ? 6 : 3.5;
     // Render the part
     union() {
         translate(v=[-o,-post_w/2,0]) hull() {
             translate([0,0,1])
-                cube(size=[o+17,post_w,wood_height()-2]);
+                cube(size=[o+neck_length,post_w,wood_height()-2]);
             translate([0,1,0])
-                cube(size=[o+16.5,post_w-2,wood_height()]);
+                cube(size=[o+neck_length,post_w-2,wood_height()]);
         }
         difference() {
-            translate(v=[12,0,0]) {
+            translate(v=[neck_length,0,0]) {
                 union() {
                     difference() {
                         hull() {
@@ -192,9 +220,7 @@ module wood_plug(solid=true, $fn=50) {
  * Cutout (female) for wooden track, centered on its Y axis
  */
 module wood_cutout() {
-    neck_length = 10.75;
-    radius      = wood_plug_radius() + .3;
-    plug_cutout(radius, neck_length);
+    plug_cutout(wood_plug_radius() + .3, wood_plug_neck_length(), wood_height());
 }
 
 /* ******************************************************************************
@@ -205,17 +231,18 @@ module wood_cutout() {
  * Plug (male) for Trackmaster track, centered on its Y axis
  */
 module trackmaster_plug() {
+    neck_length = trackmaster_plug_neck_length();
     difference() {
         union() {
             translate(v=[-o,-2.5,0]) {
                 hull() {
                     translate([0,0,1])
-                        cube(size=[o+4.75,5,trackmaster_well_height()-2]);
+                        cube(size=[o+neck_length,5,trackmaster_well_height()-2]);
                     translate([0,1,0])
-                        cube(size=[o+4.75,5-2,trackmaster_well_height()]);
+                        cube(size=[o+neck_length,5-2,trackmaster_well_height()]);
                 }
             }
-            translate(v=[4.75,0,0]) {
+            translate(v=[neck_length,0,0]) {
                 hull() {
                     cylinder(h=trackmaster_well_height(),r=trackmaster_plug_radius()-bevel_width);
                     translate([0,0,1])
@@ -224,7 +251,7 @@ module trackmaster_plug() {
             }
         }
         translate(v=[2,-.6,-o]) {
-            cube(size=[6+o,1.2,trackmaster_well_height()+o+o]);
+            cube(size=[7+o,1.2,trackmaster_well_height()+o+o]);
         }
         translate(v=[4.75,0,-o]) {
             cylinder(h=trackmaster_well_height()+o+o, r=1.75);
@@ -236,8 +263,6 @@ module trackmaster_plug() {
  * Cutout (female) for Trackmaster track, centered on its Y axis
  */
 module trackmaster_cutout() {
-    radius      = trackmaster_plug_radius() + .7;
-    neck_length = 5;
-    plug_cutout(radius, neck_length);
+    plug_cutout(trackmaster_plug_radius() + .7, trackmaster_plug_neck_length(), trackmaster_height());
 }
 
