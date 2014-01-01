@@ -1,5 +1,5 @@
 /**
- * An adapter to connect Thomas Trackmaster plastic track to Thomas- and Brio-compatible
+ * Adapters to connect Thomas Trackmaster plastic track to Thomas- and Brio-compatible
  * wooden train track.
  *
  * To render this shape, you will need
