@@ -184,11 +184,13 @@ module wood_plug(solid=true) {
     post_w = solid ? 6 : 3.5;
     // Render the part
     union() {
-        translate(v=[-o,-post_w/2,0]) hull() {
-            translate([0,0,1])
-                cube(size=[o+neck_length,post_w,wood_height()-2]);
-            translate([0,1,0])
-                cube(size=[o+neck_length,post_w-2,wood_height()]);
+        translate(v=[-o,-post_w/2,0]) hull()
+            assign(adjusted_length = solid ? neck_length : neck_length + wood_plug_radius() - bevel_width - o)
+            {
+                translate([0,0,1])
+                    cube(size=[o+adjusted_length,post_w,wood_height()-2]);
+                translate([0,1,0])
+                    cube(size=[o+adjusted_length,post_w-2,wood_height()]);
         }
         difference() {
             translate(v=[neck_length,0,0]) {
@@ -204,9 +206,9 @@ module wood_plug(solid=true) {
                                 cube(size=[6,6.4,wood_height()+o+o]);
                             translate(v=[0,0,-o])
                                 cylinder(h=wood_height()+o+o,r=3.8);
-                            translate(v=[-5,0,4+o+o]) rotate([0,0,45])
+                            translate(v=[-5,0,wood_height()/2+o]) rotate([0,0,45])
                                 cube(size=[7,7,wood_height()+o+o], center=true);
-                            translate(v=[-5,0,4+o+o]) rotate([0,0,0])
+                            translate(v=[-5,0,wood_height()/2+o]) rotate([0,0,0])
                                 cube(size=[2,10,wood_height()+o+o], center=true);
                         }
                     }
