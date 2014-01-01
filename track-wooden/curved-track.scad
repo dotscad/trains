@@ -32,6 +32,12 @@ radius = 87.5; // [87.5:small, 180:large]
 // Angle of track to render.  45 is standard.
 angle = 45; // [1:360]
 
+// Connector to place on the left end
+left_connector = "female"; // [male,female,none]
+
+// Connector to place on the right end
+right_connector = "male"; // [male,female,none]
+
 /* [Hidden] */
 
 // Render the part
@@ -53,13 +59,28 @@ module curved_track(radius, angle, $fn=100) {
     difference() {
         union() {
             wood_track_arc(radius=radius, angle=angle);
-            translate([radius+wood_width()/2,0,0])
-                rotate([0,0,-90])
-                wood_plug();
+            if (right_connector == "male") {
+                translate([radius+wood_width()/2,0,0])
+                    rotate([0,0,-90])
+                    wood_plug();
+            }
+            if (left_connector == "male") {
+                rotate([0,0,angle])
+                    translate([radius+wood_width()/2,0,0])
+                    rotate([0,0,90])
+                    wood_plug();
+            }
         }
-        rotate([0,0,angle])
-            translate([radius+ wood_width()/2,0,0])
-            rotate([0,0,-90])
-            wood_cutout();
+        if (right_connector == "female") {
+            translate([radius+wood_width()/2,0,0])
+                rotate([0,0,90])
+                wood_cutout();
+        }
+        if (left_connector == "female") {
+            rotate([0,0,angle])
+                translate([radius+wood_width()/2,0,0])
+                rotate([0,0,-90])
+                wood_cutout();
+        }
     }
 }
