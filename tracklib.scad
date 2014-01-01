@@ -118,8 +118,7 @@ module wood_track_2d() {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad = bevel_width*sqrt(.5)*(o/2);
-    assign(bevel_length = 2 * o)
+    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
     difference() {
         square(size = [wood_width(),wood_height()]);
         // Wheel wells
@@ -156,8 +155,7 @@ module wood_track(length=53.5) {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad = bevel_width*sqrt(.5)*(o/2);
-    assign(bevel_length = length + 2 * o)
+    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
     difference() {
         rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
         // Bevels on outer faces of the wheel wells
