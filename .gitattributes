@@ -1,0 +1,5 @@
+# Auto-magic line endings
+*.scad text
+
+# Treat STL files as binary
+*.stl -text
