@@ -21,6 +21,7 @@
 
 // A global overlap variable (to prevent printing glitches)
 o = .1;
+function o() = o;
 
 // Constants for wooden track parts:
 function wood_width()            = 40;
@@ -42,6 +43,7 @@ function trackmaster_plug_neck_length() = 4.75;
 // Bevel size
 bevel_width = 1;
 bevel = o + bevel_width;
+function bevel() = bevel;
 
 /* ******************************************************************************
  * Include some other libraries
@@ -71,7 +73,8 @@ module tracklib_example($fn=25) {
        translate([0,-wood_plug_radius()-2]) cube([wood_plug_neck_length() + wood_plug_radius() + 2, wood_plug_radius() * 2 + 4, wood_height()]);
         wood_cutout();
     }
-    translate([-5,-10,0]) rotate([0,0,90]) wood_track_arc(10, 25, $fn=100);
+    translate([-5,-10,0]) rotate([0,0,90]) wood_track_arc(10, 25, $fn=120);
+    translate([-14,-3,0]) rotate([0,0,90+25]) wood_track_slope_up(25, 30, $fn=120);
     // Trackmaster pieces
     translate([40,30,0]) trackmaster_plug();
     translate([40,10,0]) difference() {
@@ -127,15 +130,23 @@ module plug_cutout(radius, neck_length, track_height) {
  * ****************************************************************************** */
 
 /**
- * 2d shape for basic wooden track.  To be used with linear_extrude() and rotate_extrude().
+ * 2d shape for basic wooden track.  To be used in conjunction with wood_rails_2d(),
+ * linear_extrude(), and rotate_extrude().
  */
 module wood_track_2d() {
+    square(size = [wood_width(),wood_height()]);
+}
+
+/**
+ * 2d shape for the rails (or wheel wells) in basic wooden track.  To be used with
+ * wood_track_2d(), linear_extrude(), and rotate_extrude().
+ */
+module wood_rails_2d() {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
     bevel_pad    = bevel_width*sqrt(.5)*(o/2);
-    difference() {
-        square(size = [wood_width(),wood_height()]);
+    union() {
         // Wheel wells
         for (i = [well_padding, wood_width() - well_padding - well_width]) {
             translate(v=[i,wood_well_height()]) {
@@ -151,14 +162,6 @@ module wood_track_2d() {
                 }
             }
         }
-        // Bevels on the track sides
-        for (i=[ [-bevel_pad,wood_height()+bevel_pad], [wood_width()+bevel_pad,-bevel_pad], [-bevel_pad,-bevel_pad], [wood_width()+bevel_pad,wood_height()+bevel_pad] ]) {
-            translate(v=i) {
-                rotate(a=[0,0,45]) {
-                    square([bevel,bevel], center=true);
-                }
-            }
-        }
     }
 }
 
@@ -167,18 +170,34 @@ module wood_track_2d() {
  * @param int length Length of track to render.  Standard short wooden length is 53.5mm.
  */
 module wood_track(length=53.5) {
+    difference() {
+        rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
+        wood_rails(length);
+    }
+}
+
+/**
+ * The rails for an individual piece of wooden track.  This module is intended to be used
+ * inside of a difference() call to subtract the rails (wheel wells) from a piece of
+ * track.  See wood_track() for usage example.
+ * @param int length      Length of track to render.  Standard short wooden length is 53.5mm.
+ * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
+ */
+module wood_rails(length=53.5) {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
     bevel_pad    = bevel_width*sqrt(.5)*(o/2);
-    difference() {
-        rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
+    union() {
+        rotate([90,0,90]) translate([0,0,-o]) linear_extrude(length+2*o, convexity = 20) wood_rails_2d();
         // Bevels on outer faces of the wheel wells
-        for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
-            for (j=[-bevel_pad,length+bevel_pad]) {
-                translate(v=[j,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
-                    rotate(a=[0,0,45]) {
-                        cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+        if (bevel_ends) {
+            for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
+                for (j=[-bevel_pad,length+bevel_pad]) {
+                    translate(v=[j,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                        rotate(a=[0,0,45]) {
+                            cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                        }
                     }
                 }
             }
@@ -188,14 +207,11 @@ module wood_track(length=53.5) {
 
 /**
  * Individual piece of wooden track, curved along an arc.
+ * Note:  For this to look good, I would suggest providing $fn=120 or greater.
  * @param int radius Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
  * @param int angle  Angle of track to render.  Standard track angle is 45 degrees.
  */
 module wood_track_arc(radius = 245/2, angle=45) {
-    well_width   = wood_well_width();
-    well_spacing = wood_well_spacing();
-    well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
     difference() {
         intersection() {
             pie(radius + wood_width(), angle, wood_height());
@@ -204,19 +220,110 @@ module wood_track_arc(radius = 245/2, angle=45) {
                 wood_track_2d();
         }
         // Bevels on outer faces of the wheel wells
-        for (a=[0,angle]) {
-            rotate([0,0,a])
+        wood_rails_arc(radius,angle);
+    }
+}
+
+/**
+ * The rails for an individual piece of wooden track, curved along an arc.  This module
+ * is intended to be used inside of a difference() call to subtract the rails (wheel
+ * wells) from a piece of track.  See wood_track_arc() for usage example.
+ * @param int radius      Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
+ * @param int angle       Angle of track to render.  Standard track angle is 45 degrees.
+ * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
+ */
+module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
+    well_width   = wood_well_width();
+    well_spacing = wood_well_spacing();
+    well_padding = (wood_width() - well_spacing - (2*well_width))/2;
+    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    union() {
+        intersection() {
+            pie(radius + wood_width(), angle, wood_height());
+            rotate_extrude(convexity = 10)
                 translate([radius,0,0])
-                rotate([0,0,-90])
-                for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
-                    translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
-                        rotate(a=[0,0,45]) {
-                            cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                wood_rails_2d();
+        }
+        if (bevel_ends) {
+            for (a=[0,angle]) {
+                rotate([0,0,a])
+                    translate([radius,0,0])
+                    rotate([0,0,-90])
+                    for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
+                        translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                            rotate(a=[0,0,45]) {
+                                cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                            }
                         }
                     }
-                }
+            }
         }
     }
+}
+
+/**
+ * Individual piece of wooden track, curved upward at a slope.
+ * Note:  For this to look good, I would suggest providing $fn=120 or greater.
+ * @param int radius Radius of upper/inner edge of the trac slope.  Standard values seem to range 24.5-34cm
+ * @param int angle  Angle of slope to render.  Standard angles seem to range 20-30 degrees.
+ */
+module wood_track_slope_up(radius=25, angle=30) {
+    difference() {
+        rotate([0,90,0])
+            translate([-radius,0,0])
+            intersection() {
+                pie(radius + wood_height(), angle, wood_width());
+                rotate_extrude(convexity = 10)
+                    translate([radius,0,0])
+                    rotate([0,0,90])
+                    wood_track_2d();
+            }
+        wood_rails_slope_up(radius, angle);
+    }
+}
+
+/**
+ * The rails for an individual piece of wooden track, curved upward at a slope.  This
+ * module is intended to be used inside of a difference() call to subtract the rails
+ * (wheel wells) from a piece of track.  See wood_track_slope_up() for usage example.
+ * @param int radius      Radius of upper/inner edge of the trac slope.  Standard values seem to range 24.5-34cm
+ * @param int angle       Angle of slope to render.  Standard angles seem to range 20-30 degrees.
+ * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
+ */
+module wood_rails_slope_up(radius=25, angle=30, bevel_ends=true) {
+    well_width   = wood_well_width();
+    well_spacing = wood_well_spacing();
+    well_padding = (wood_width() - well_spacing - (2*well_width))/2;
+    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    rotate([0,90,0])
+        translate([-radius,0,0])
+        union() {
+            intersection() {
+                pie(radius + wood_height(), angle, wood_width());
+                rotate_extrude(convexity = 10)
+                    translate([radius,0,0])
+                        rotate([0,0,90])
+                        difference() {
+                            wood_rails_2d();
+                        }
+            }
+            // Bevels on outer faces of the wheel wells
+            if (bevel_ends) {
+                for (a=[0,angle]) {
+                    rotate([0,0,a])
+                        translate([radius,0,0])
+                        rotate([90,0,0])
+                        for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
+                            rotate([0,-90,0])
+                            translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                                rotate(a=[0,0,45]) {
+                                    cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                                }
+                            }
+                        }
+                }
+            }
+        }
 }
 
 /**
