@@ -168,11 +168,14 @@ module wood_rails_2d() {
 /**
  * Individual piece of wooden track.  Same gauge as Trackmaster but not the same shape.
  * @param int length Length of track to render.  Standard short wooden length is 53.5mm.
+ * @param bool rails False if you do not want to include rails (wheel wells).
  */
-module wood_track(length=53.5) {
+module wood_track(length=53.5, rails=true) {
     difference() {
         rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
-        wood_rails(length);
+        if (rails) {
+            wood_rails(length);
+        }
     }
 }
 
@@ -209,8 +212,9 @@ module wood_rails(length=53.5) {
  * Note:  For this to look good, I would suggest providing $fn=120 or greater.
  * @param int radius Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
  * @param int angle  Angle of track to render.  Standard track angle is 45 degrees.
+ * @param bool rails False if you do not want to include rails (wheel wells).
  */
-module wood_track_arc(radius = 245/2, angle=45) {
+module wood_track_arc(radius = 245/2, angle=45, rails=true) {
     difference() {
         intersection() {
             pie(radius + wood_width(), angle, wood_height());
@@ -218,7 +222,9 @@ module wood_track_arc(radius = 245/2, angle=45) {
                 translate([radius,0,0])
                 wood_track_2d();
         }
-        wood_rails_arc(radius,angle);
+        if (rails) {
+            wood_rails_arc(radius,angle);
+        }
     }
 }
 
@@ -264,8 +270,9 @@ module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
  * Note:  For this to look good, I would suggest providing $fn=120 or greater.
  * @param int radius Radius of upper/inner edge of the trac slope.  Standard values seem to range 24.5-34cm
  * @param int angle  Angle of slope to render.  Standard angles seem to range 20-30 degrees.
+ * @param bool rails False if you do not want to include rails (wheel wells).
  */
-module wood_track_slope_up(radius=25, angle=30) {
+module wood_track_slope_up(radius=25, angle=30, rails=true) {
     difference() {
         rotate([0,90,0])
             translate([-radius,0,0])
@@ -276,7 +283,9 @@ module wood_track_slope_up(radius=25, angle=30) {
                     rotate([0,0,90])
                     wood_track_2d();
             }
-        wood_rails_slope_up(radius, angle);
+        if (rails) {
+            wood_rails_slope_up(radius, angle);
+        }
     }
 }
 
