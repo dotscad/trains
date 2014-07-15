@@ -237,7 +237,7 @@ module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
     bevel_pad    = bevel_width*sqrt(.5)*(o/2);
     union() {
         intersection() {
-            pie(radius + wood_width(), angle, wood_height());
+            rotate([0,0,-o]) pie(radius + wood_width(), angle+2*o, wood_height()+o);
             rotate_extrude(convexity = 10)
                 translate([radius,0,0])
                 wood_rails_2d();
