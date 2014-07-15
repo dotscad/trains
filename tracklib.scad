@@ -190,7 +190,6 @@ module wood_rails(length=53.5) {
     bevel_pad    = bevel_width*sqrt(.5)*(o/2);
     union() {
         rotate([90,0,90]) translate([0,0,-o]) linear_extrude(length+2*o, convexity = 20) wood_rails_2d();
-        // Bevels on outer faces of the wheel wells
         if (bevel_ends) {
             for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
                 for (j=[-bevel_pad,length+bevel_pad]) {
@@ -219,7 +218,6 @@ module wood_track_arc(radius = 245/2, angle=45) {
                 translate([radius,0,0])
                 wood_track_2d();
         }
-        // Bevels on outer faces of the wheel wells
         wood_rails_arc(radius,angle);
     }
 }
@@ -307,7 +305,6 @@ module wood_rails_slope_up(radius=25, angle=30, bevel_ends=true) {
                             wood_rails_2d();
                         }
             }
-            // Bevels on outer faces of the wheel wells
             if (bevel_ends) {
                 for (a=[0,angle]) {
                     rotate([0,0,a])
