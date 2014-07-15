@@ -32,6 +32,9 @@
 // Render as a solid shape, or a spring?
 solid = true;
 
+// Nudge the length shorter, if necessary
+length_nudge = 0;
+
 /* [Hidden] */
 
 // Render the part
@@ -61,7 +64,7 @@ module dogbone(solid=true, $fn=25) {
     union() {
         // Render the plugs
         wood_plug(solid);
-        translate([0,0,0]) rotate([0,0,180]) wood_plug(solid);
+        translate([length_nudge,0,0]) rotate([0,0,180]) wood_plug(solid);
         // If "spring" variant, render the thicker middle portion (no need to do so for
         // "solid" variants because it'd be covered up by the plug's own post).
         if (!solid) {
