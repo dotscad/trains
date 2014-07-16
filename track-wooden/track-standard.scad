@@ -111,6 +111,7 @@ module render_track(straight_length, right_curve, left_curve, radius, angle) {
                     wood_plug();
             }
         }
+        // Subtract any requested female connector regions
         if (straight_length > 0 && straight_connector == "female") {
             translate([radius+wood_width()/2,straight_length,0])
                 rotate([0,0,-90])
@@ -134,16 +135,14 @@ module render_track(straight_length, right_curve, left_curve, radius, angle) {
                 wood_cutout();
         }
         // Now we can subtract the "rails"
-        union() {
-            if (straight_length > 0) {
-                translate([radius+wood_width(),0,0]) rotate([0,0,90]) wood_rails(straight_length);
-            }
-            if (left_curve) {
-                wood_rails_arc(radius, angle);
-            }
-            if (right_curve) {
-                translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle]) wood_rails_arc(radius, angle);
-            }
+        if (straight_length > 0) {
+            translate([radius+wood_width(),0,0]) rotate([0,0,90]) wood_rails(straight_length);
+        }
+        if (left_curve) {
+            wood_rails_arc(radius, angle);
+        }
+        if (right_curve) {
+            translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle]) wood_rails_arc(radius, angle);
         }
     }
 }
