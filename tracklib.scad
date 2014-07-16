@@ -186,7 +186,7 @@ module wood_track(length=53.5, rails=true) {
  * @param int length      Length of track to render.  Standard short wooden length is 53.5mm.
  * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
  */
-module wood_rails(length=53.5) {
+module wood_rails(length=53.5, bevel_ends=true) {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
