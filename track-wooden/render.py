@@ -57,5 +57,5 @@ if __name__ == '__main__':
                                     if name in seen:
                                         continue
                                     print name
-                                    #s.render_stl(name)
+                                    s.render_stl(name)
                                     seen[name] = True
