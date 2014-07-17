@@ -34,9 +34,8 @@ radius = 87.5; // [87.5:small, 180:large]
 // Angle of track to render.  45 is standard.
 angle = 45; // [1:360]
 
-// Length of the straight center line of track.  Set to zero to disable.
-// @todo add other straight track measurements
-straight_length = 102; // [0:none, 102:switch_small, 153:switch_large]
+// Length of the straight center line of track, or zero to disable.  Measurements are based on standard 2-inch increments.
+straight_length = 102; // [0:none, 51:xsmall, 102:small, 152:medium, 203:large, 254:xlarge, 305:xxlarge]
 
 // Add a curve to the right?
 right_curve = true; // [true,false]
