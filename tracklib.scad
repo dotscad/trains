@@ -74,7 +74,8 @@ module tracklib_example($fn=25) {
         wood_cutout();
     }
     translate([-5,-10,0]) rotate([0,0,90]) wood_track_arc(10, 25, $fn=120);
-    translate([-14,-3,0]) rotate([0,0,90+25]) wood_track_slope_up(25, 30, $fn=120);
+    translate([-14,-3,0]) rotate([0,0,90+25]) wood_track_slope(25, 30, $fn=120);
+    #translate([-29,-10,6]) rotate([30,0,90+25]) wood_track_slope(25, -30, $fn=120);
     // Trackmaster pieces
     translate([40,30,0]) trackmaster_plug();
     translate([40,10,0]) difference() {
@@ -266,58 +267,75 @@ module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
 }
 
 /**
- * Individual piece of wooden track, curved upward at a slope.
+ * Individual piece of wooden track, curved upward or downward at a slope.
  * Note:  For this to look good, I would suggest providing $fn=120 or greater.
- * @param int radius Radius of upper/inner edge of the trac slope.  Standard values seem to range 24.5-34cm
- * @param int angle  Angle of slope to render.  Standard angles seem to range 20-30 degrees.
+ * @param int radius Radius of upper/top edge of the track slope.  Standard values seem to range 24.5-34cm
+ * @param int angle  Positive or negative angle of slope to render.  Standard angles seem to range 20-30 degrees.
  * @param bool rails False if you do not want to include rails (wheel wells).
  */
-module wood_track_slope_up(radius=25, angle=30, rails=true) {
+module wood_track_slope(radius=25, angle=30, rails=true) {
+    abs_angle = abs(angle); // convert the negative angle to positive
+
+    // Really wish we could use "if" for this kind of stuff....
+    angle_sign = (angle > 0) ? 1       : -1;
+    trans_z    = (angle > 0) ? -radius : wood_height() - radius; // Note: inverted if angle > 0
+    trans_x    = (angle > 0) ? 0       : -wood_width();          // Note: inverted if angle < 0
+
     difference() {
-        rotate([0,90,0])
-            translate([-radius,0,0])
+        rotate([0,90*angle_sign,0])
+            translate([trans_z,0,trans_x])
             intersection() {
-                pie(radius + wood_height(), angle, wood_width());
+                pie(radius + wood_height(), abs_angle, wood_width());
                 rotate_extrude(convexity = 10)
                     translate([radius,0,0])
                     rotate([0,0,90])
                     wood_track_2d();
             }
         if (rails) {
-            wood_rails_slope_up(radius, angle);
+            wood_rails_slope(radius, angle);
         }
     }
 }
 
 /**
- * The rails for an individual piece of wooden track, curved upward at a slope.  This
+ * The rails for an individual piece of wooden track, curved up or down at a slope.  This
  * module is intended to be used inside of a difference() call to subtract the rails
- * (wheel wells) from a piece of track.  See wood_track_slope_up() for usage example.
- * @param int radius      Radius of upper/inner edge of the trac slope.  Standard values seem to range 24.5-34cm
- * @param int angle       Angle of slope to render.  Standard angles seem to range 20-30 degrees.
+ * (wheel wells) from a piece of track.  See wood_track_slope() for usage example.
+ * @param int radius      Radius of upper/top edge of the track slope.  Standard values seem to range 24.5-34cm
+ * @param int angle       Positive or negative angle of slope to render.  Standard angles seem to range 20-30 degrees.
  * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
  */
-module wood_rails_slope_up(radius=25, angle=30, bevel_ends=true) {
+module wood_rails_slope(radius=25, angle=30, bevel_ends=true) {
+    abs_angle    = abs(angle) + 2 * o; // convert the negative angle to positive, plus some overhang
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
     bevel_pad    = bevel_width*sqrt(.5)*(o/2);
-    rotate([0,90,0])
-        translate([-radius,0,0])
+
+    // Really wish we could use "if" for this kind of stuff....
+    angle_sign    = (angle > 0) ? 1                      : -1;
+    pie_radius    = (angle > 0) ? radius + wood_height() : radius + o;
+    rails_radius  = (angle > 0) ? radius                 : radius - wood_height();
+    bevels_radius = (angle > 0) ? radius                 : radius + wood_height() - (wood_height() - wood_well_height()) + o;
+    trans_z       = (angle > 0) ? -radius                : wood_height() - radius; // Note: inverted if angle > 0
+    trans_x       = (angle > 0) ? 0                      : -wood_width();          // Note: inverted if angle < 0
+
+    rotate([0,90*angle_sign,0])
+        translate([trans_z,0,trans_x])
         union() {
-            intersection() {
-                pie(radius + wood_height(), angle, wood_width());
+            rotate([0,0,-o])intersection() {
+                pie(pie_radius, abs_angle, wood_width());
                 rotate_extrude(convexity = 10)
-                    translate([radius,0,0])
-                        rotate([0,0,90])
+                    translate([rails_radius, -trans_x,0])
+                        rotate([0,0,90*angle_sign])
                         difference() {
                             wood_rails_2d();
                         }
             }
             if (bevel_ends) {
-                for (a=[0,angle]) {
+                for (a=[0,abs_angle]) {
                     rotate([0,0,a])
-                        translate([radius,0,0])
+                        translate([bevels_radius,0,0])
                         rotate([90,0,0])
                         for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
                             rotate([0,-90,0])
