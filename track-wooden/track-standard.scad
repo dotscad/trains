@@ -28,37 +28,34 @@
 
 /* [Global] */
 
+// Connector to place on the base end of the piece.
+base = "female"; // [male,female]
+
+// Render a curve to the left with the requested connector, or none for no curve.
+left = "female"; // [male,female,none]
+
+// Render a straight center track with the requested connector, or none for no straight track.
+straight = "male"; // [male,female,none]
+
+// Render a curve to the left with the requested connector, or none for no curve.
+right = "female"; // [male,female,none]
+
+// Length of the straight track, or auto to use the best fit for the requested curve radius.
+straight_size = "auto"; // [auto:auto, 51:xsmall, 102:small, 152:medium, 203:large, 254:xlarge, 305:xxlarge]
+
 // Curve radius.  Sizes provided are standard.
-radius = 87.5; // [87.5:small, 180:large]
+radius = 180; // [87.5:small, 180:large]
+
+/* [Hidden] */
 
 // Angle of track to render.  45 is standard.
 angle = 45; // [1:360]
 
-// Length of the straight center line of track, or zero to disable.  Measurements are based on standard 2-inch increments.
-straight_length = 102; // [0:none, 51:xsmall, 102:small, 152:medium, 203:large, 254:xlarge, 305:xxlarge]
-
-// Add a curve to the right?
-right_curve = true; // [true,false]
-
-// Add a curve to the left?
-left_curve = true; // [true,false]
-
-// Connector to place on the base end of the piece.
-base_connector = "female"; // [male,female,none]
-
-// Connector to place on the end of the left curve (if enabled).
-left_connector = "female"; // [male,female,none]
-
-// Connector on the straight/center line of track (if enabled).
-straight_connector = "male"; // [male,female,none]
-
-// Connector to place on the end of the right curve (if enabled).
-right_connector = "female"; // [male,female,none]
-
-/* [Hidden] */
+// Lots of facets
+$fn=120;
 
 // Render the part
-render_track(straight_length, right_curve, left_curve, radius, angle, $fn=120);
+render_track(base, left, straight, right, straight_size, radius, angle);
 
 /* ******************************************************************************
  * Main module code below:
@@ -69,79 +66,101 @@ use <../tracklib.scad>;
 use <tracklib.scad>;
 
 /*
- * @param int straight_length Length of the straight center line of track.  Set to zero to disable.
- * @param bool right_curve    Add a curve to the right?
- * @param bool left_curve     Add a curve to the left?
- * @param int radius          Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
- * @param int angle           Angle of track to render.  Standard track angle is 45 degrees.
+ * @param string base              Connector to place on the base end of the piece.
+ * @param string left              Render a curve to the left with the requested connector, or none for no curve.
+ * @param string straight          Render a straight center track with the requested connector, or none for no straight track.
+ * @param string right             Render a curve to the left with the requested connector, or none for no curve.
+ * @param string|int straight_size Length of the straight track, or auto to use the best fit for the requested curve radius.
+ * @param float radius             Curve radius (usually 87.5 or 180)
+ * @param float angle              Angle of track to render.  45 is standard
  */
-module render_track(straight_length, right_curve, left_curve, radius, angle) {
-    translate([-radius,0,0]) difference() {
-        union() {
-            if (straight_length > 0) {
-                translate([radius+wood_width(),0,0]) rotate([0,0,90]) wood_track(straight_length, false);
-                if (straight_connector == "male") {
-                    translate([radius+wood_width()/2,straight_length,0])
+module render_track(base, left, straight, right, straight_size, radius, angle) {
+    straight_length = (
+        straight_size == "auto"
+        ? ((left == "none" && right == "none")
+            ? -1 // Wish we could throw an exception in OpenSCAD
+            : ((radius ==  87.5)
+                ? 102
+                : 152
+            )
+        )
+        : straight_size
+    );
+    if (straight_length == -1) {
+        echo("ERROR: When using straight_size==auto, you must render a right or left curve.");
+    }
+    else {
+        translate([-radius,0,0]) difference() {
+            union() {
+                if (straight != "none") {
+                    translate([radius+wood_width(),0,0])
                         rotate([0,0,90])
-                        wood_plug();
+                        wood_track(straight_length, false);
+                    if (straight == "male") {
+                        translate([radius+wood_width()/2,straight_length,0])
+                            rotate([0,0,90])
+                            wood_plug();
+                    }
                 }
-            }
-            if (left_curve) {
-                wood_track_arc(radius, angle, false);
-                if (left_connector == "male") {
-                    rotate([0,0,angle])
-                        translate([radius+wood_width()/2,0,0])
-                        rotate([0,0,90])
-                        wood_plug();
+                if (left != "none") {
+                    wood_track_arc(radius, angle, false);
+                    if (left == "male") {
+                        rotate([0,0,angle])
+                            translate([radius+wood_width()/2,0,0])
+                            rotate([0,0,90])
+                            wood_plug();
+                    }
                 }
-            }
-            if (right_curve) {
-                translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle]) wood_track_arc(radius, angle, false);
-                if (right_connector == "male") {
-                    translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle])
-                        translate([radius+wood_width()/2,0,0])
+                if (right != "none") {
+                    translate([radius*2+wood_width(),0,0])
+                        rotate([0,0,180-angle])
+                        wood_track_arc(radius, angle, false);
+                    if (right == "male") {
+                        translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle])
+                            translate([radius+wood_width()/2,0,0])
+                            rotate([0,0,-90])
+                            wood_plug();
+                    }
+                }
+                if (base == "male") {
+                    translate([radius+wood_width()/2,0,0])
                         rotate([0,0,-90])
                         wood_plug();
                 }
             }
-            if (base_connector == "male") {
-                translate([radius+wood_width()/2,0,0])
+            // Subtract any requested female connector regions
+            if (straight == "female") {
+                translate([radius+wood_width()/2,straight_length,0])
                     rotate([0,0,-90])
-                    wood_plug();
+                    wood_cutout();
             }
-        }
-        // Subtract any requested female connector regions
-        if (straight_length > 0 && straight_connector == "female") {
-            translate([radius+wood_width()/2,straight_length,0])
-                rotate([0,0,-90])
-                wood_cutout();
-        }
-        if (left_curve && left_connector == "female") {
-            rotate([0,0,angle])
+            if (left == "female") {
+                rotate([0,0,angle])
+                    translate([radius+wood_width()/2,0,0])
+                    rotate([0,0,-90])
+                    wood_cutout();
+            }
+            if (right == "female") {
+                translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle])
+                    translate([radius+wood_width()/2,0,0])
+                    rotate([0,0,90])
+                    wood_cutout();
+            }
+            if (base == "female") {
                 translate([radius+wood_width()/2,0,0])
-                rotate([0,0,-90])
-                wood_cutout();
-        }
-        if (right_curve && right_connector == "female") {
-            translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle])
-                translate([radius+wood_width()/2,0,0])
-                rotate([0,0,90])
-                wood_cutout();
-        }
-        if (base_connector == "female") {
-            translate([radius+wood_width()/2,0,0])
-                rotate([0,0,90])
-                wood_cutout();
-        }
-        // Now we can subtract the "rails"
-        if (straight_length > 0) {
-            translate([radius+wood_width(),0,0]) rotate([0,0,90]) wood_rails(straight_length);
-        }
-        if (left_curve) {
-            wood_rails_arc(radius, angle);
-        }
-        if (right_curve) {
-            translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle]) wood_rails_arc(radius, angle);
+                    rotate([0,0,90])
+                    wood_cutout();
+            }
+            // Now we can subtract the "rails"
+            if (straight != "none") {
+                translate([radius+wood_width(),0,0]) rotate([0,0,90]) wood_rails(straight_length);
+            }
+            if (left != "none") {
+                wood_rails_arc(radius, angle);
+            }
+            if (right != "none") {
+                translate([radius*2+wood_width(),0,0]) rotate([0,0,180-angle]) wood_rails_arc(radius, angle);
+            }
         }
     }
 }
