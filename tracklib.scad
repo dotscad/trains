@@ -20,8 +20,7 @@
  */
 
 // A global overlap variable (to prevent printing glitches)
-o = .1;
-function o() = o;
+$o = .1;
 
 // Constants for wooden track parts:
 function wood_width()            = 40;
@@ -42,7 +41,7 @@ function trackmaster_plug_neck_length() = 4.75;
 // @todo need to figure out what to call these variables...
 // Bevel size
 bevel_width = 1;
-bevel = o + bevel_width;
+bevel = $o + bevel_width;
 function bevel() = bevel;
 
 /* ******************************************************************************
@@ -95,29 +94,29 @@ module tracklib_example($fn=25) {
  * @param float neck_length Length of the post's neck (edge of track to center of round cutout)
  */
 module plug_cutout(radius, neck_length, track_height) {
-    bevel_pad    = sqrt(.5)*(o/2);
-    bevel_height = sqrt(.5)*(bevel_width+o);
+    bevel_pad    = sqrt(.5)*($o/2);
+    bevel_height = sqrt(.5)*(bevel_width+$o);
     bevel_radius = bevel_height-bevel_pad;
     height_pad   = sqrt(.5)*(bevel_width/2);
     union() {
-        translate(v=[-o,-3.75,-o]) {
-            cube(size=[o+neck_length,7.5,track_height+o+o]);
+        translate(v=[-$o,-3.75,-$o]) {
+            cube(size=[$o+neck_length,7.5,track_height+$o+$o]);
         }
         translate(v=[neck_length,0,track_height/2]) {
-            cylinder(h=track_height+o+o,r=radius, center=true);
+            cylinder(h=track_height+$o+$o,r=radius, center=true);
         }
         // bevelled edges
-        translate(v=[neck_length,0,track_height+o-height_pad]) {
-            cylinder(h=bevel_height+o,r1=radius-bevel_pad, r2=radius+bevel_radius, center=true);
+        translate(v=[neck_length,0,track_height+$o-height_pad]) {
+            cylinder(h=bevel_height+$o,r1=radius-bevel_pad, r2=radius+bevel_radius, center=true);
         }
-        translate(v=[neck_length,0,height_pad-o]) {
-            cylinder(h=bevel_height+o,r1=radius+bevel_radius,r2=radius-bevel_pad, center=true);
+        translate(v=[neck_length,0,height_pad-$o]) {
+            cylinder(h=bevel_height+$o,r1=radius+bevel_radius,r2=radius-bevel_pad, center=true);
         }
         for (i=[ 3.75-bevel_pad, -3.75+bevel_pad ]) {
             for (j=[ track_height+bevel_pad, -bevel_pad ]) {
-                translate(v=[(neck_length-o)/2,i,j]) {
+                translate(v=[(neck_length-$o)/2,i,j]) {
                     rotate(a=[45,0,0]) {
-                        cube(size = [o+neck_length,bevel,bevel], center=true);
+                        cube(size = [$o+neck_length,bevel,bevel], center=true);
                     }
                 }
             }
@@ -146,12 +145,12 @@ module wood_rails_2d() {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    bevel_pad    = bevel_width*sqrt(.5)*($o/2);
     union() {
         // Wheel wells
         for (i = [well_padding, wood_width() - well_padding - well_width]) {
             translate(v=[i,wood_well_height()]) {
-                square([well_width,wood_height()-wood_well_height()+o]);
+                square([well_width,wood_height()-wood_well_height()+$o]);
             }
         }
         // Bevels on wheel wells
@@ -191,15 +190,15 @@ module wood_rails(length=53.5, bevel_ends=true) {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    bevel_pad    = bevel_width*sqrt(.5)*($o/2);
     union() {
-        rotate([90,0,90]) translate([0,0,-o]) linear_extrude(length+2*o, convexity = 20) wood_rails_2d();
+        rotate([90,0,90]) translate([0,0,-$o]) linear_extrude(length+2*$o, convexity = 20) wood_rails_2d();
         if (bevel_ends) {
             for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
                 for (j=[-bevel_pad,length+bevel_pad]) {
-                    translate(v=[j,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                    translate(v=[j,i,wood_height()-((wood_height()-wood_well_height()-$o)/2)]) {
                         rotate(a=[0,0,45]) {
-                            cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                            cube(size = [bevel,bevel,wood_height()-wood_well_height()+$o], center=true);
                         }
                     }
                 }
@@ -241,10 +240,10 @@ module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    bevel_pad    = bevel_width*sqrt(.5)*($o/2);
     union() {
         intersection() {
-            rotate([0,0,-o]) pie(radius + wood_width(), angle+2*o, wood_height()+o);
+            rotate([0,0,-$o]) pie(radius + wood_width(), angle+2*$o, wood_height()+$o);
             rotate_extrude(convexity = 10)
                 translate([radius,0,0])
                 wood_rails_2d();
@@ -255,9 +254,9 @@ module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
                     translate([radius,0,0])
                     rotate([0,0,-90])
                     for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
-                        translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                        translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-$o)/2)]) {
                             rotate(a=[0,0,45]) {
-                                cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                                cube(size = [bevel,bevel,wood_height()-wood_well_height()+$o], center=true);
                             }
                         }
                     }
@@ -306,24 +305,24 @@ module wood_track_slope(radius=25, angle=30, rails=true) {
  * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
  */
 module wood_rails_slope(radius=25, angle=30, bevel_ends=true) {
-    abs_angle    = abs(angle) + 2 * o; // convert the negative angle to positive, plus some overhang
+    abs_angle    = abs(angle) + 2 * $o; // convert the negative angle to positive, plus some overhang
     well_width   = wood_well_width();
     well_spacing = wood_well_spacing();
     well_padding = (wood_width() - well_spacing - (2*well_width))/2;
-    bevel_pad    = bevel_width*sqrt(.5)*(o/2);
+    bevel_pad    = bevel_width*sqrt(.5)*($o/2);
 
     // Really wish we could use "if" for this kind of stuff....
     angle_sign    = (angle > 0) ? 1                      : -1;
-    pie_radius    = (angle > 0) ? radius + wood_height() : radius + o;
+    pie_radius    = (angle > 0) ? radius + wood_height() : radius + $o;
     rails_radius  = (angle > 0) ? radius                 : radius - wood_height();
-    bevels_radius = (angle > 0) ? radius                 : radius + wood_height() - (wood_height() - wood_well_height()) + o;
+    bevels_radius = (angle > 0) ? radius                 : radius + wood_height() - (wood_height() - wood_well_height()) + $o;
     trans_z       = (angle > 0) ? -radius                : wood_height() - radius; // Note: inverted if angle > 0
     trans_x       = (angle > 0) ? 0                      : -wood_width();          // Note: inverted if angle < 0
 
     rotate([0,90*angle_sign,0])
         translate([trans_z,0,trans_x])
         union() {
-            rotate([0,0,-o])intersection() {
+            rotate([0,0,-$o])intersection() {
                 pie(pie_radius, abs_angle, wood_width());
                 rotate_extrude(convexity = 10)
                     translate([rails_radius, -trans_x,0])
@@ -339,9 +338,9 @@ module wood_rails_slope(radius=25, angle=30, bevel_ends=true) {
                         rotate([90,0,0])
                         for (i = [ well_padding+bevel_pad, well_padding+well_width-bevel_pad, wood_width() - well_padding - well_width+bevel_pad, wood_width() - well_padding-bevel_pad ]) {
                             rotate([0,-90,0])
-                            translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-o)/2)]) {
+                            translate(v=[-bevel_pad,i,wood_height()-((wood_height()-wood_well_height()-$o)/2)]) {
                                 rotate(a=[0,0,45]) {
-                                    cube(size = [bevel,bevel,wood_height()-wood_well_height()+o], center=true);
+                                    cube(size = [bevel,bevel,wood_height()-wood_well_height()+$o], center=true);
                                 }
                             }
                         }
@@ -360,13 +359,13 @@ module wood_plug(solid=true) {
     post_w = solid ? 6 : 3.5;
     // Render the part
     union() {
-        translate(v=[-o,-post_w/2,0]) hull()
-            assign(adjusted_length = solid ? neck_length : neck_length + wood_plug_radius() - bevel_width - o)
+        translate(v=[-$o,-post_w/2,0]) hull()
+            assign(adjusted_length = solid ? neck_length : neck_length + wood_plug_radius() - bevel_width - $o)
             {
                 translate([0,0,1])
-                    cube(size=[o+adjusted_length,post_w,wood_height()-2]);
+                    cube(size=[$o+adjusted_length,post_w,wood_height()-2]);
                 translate([0,1,0])
-                    cube(size=[o+adjusted_length,post_w-2,wood_height()]);
+                    cube(size=[$o+adjusted_length,post_w-2,wood_height()]);
         }
         difference() {
             translate(v=[neck_length,0,0]) {
@@ -378,14 +377,14 @@ module wood_plug(solid=true) {
                             cylinder(h=wood_height(),r=wood_plug_radius()-bevel_width);
                         }
                         if (!solid) {
-                            translate(v=[-6,-3.2,-o])
-                                cube(size=[6,6.4,wood_height()+o+o]);
-                            translate(v=[0,0,-o])
-                                cylinder(h=wood_height()+o+o,r=3.8);
-                            translate(v=[-5,0,wood_height()/2+o]) rotate([0,0,45])
-                                cube(size=[7,7,wood_height()+o+o], center=true);
-                            translate(v=[-5,0,wood_height()/2+o]) rotate([0,0,0])
-                                cube(size=[2,10,wood_height()+o+o], center=true);
+                            translate(v=[-6,-3.2,-$o])
+                                cube(size=[6,6.4,wood_height()+$o+$o]);
+                            translate(v=[0,0,-$o])
+                                cylinder(h=wood_height()+$o+$o,r=3.8);
+                            translate(v=[-5,0,wood_height()/2+$o]) rotate([0,0,45])
+                                cube(size=[7,7,wood_height()+$o+$o], center=true);
+                            translate(v=[-5,0,wood_height()/2+$o]) rotate([0,0,0])
+                                cube(size=[2,10,wood_height()+$o+$o], center=true);
                         }
                     }
                 }
@@ -412,12 +411,12 @@ module trackmaster_plug() {
     neck_length = trackmaster_plug_neck_length();
     difference() {
         union() {
-            translate(v=[-o,-2.5,0]) {
+            translate(v=[-$o,-2.5,0]) {
                 hull() {
                     translate([0,0,1])
-                        cube(size=[o+neck_length,5,trackmaster_well_height()-2]);
+                        cube(size=[$o+neck_length,5,trackmaster_well_height()-2]);
                     translate([0,1,0])
-                        cube(size=[o+neck_length,5-2,trackmaster_well_height()]);
+                        cube(size=[$o+neck_length,5-2,trackmaster_well_height()]);
                 }
             }
             translate(v=[neck_length,0,0]) {
@@ -428,11 +427,11 @@ module trackmaster_plug() {
                 }
             }
         }
-        translate(v=[2,-.6,-o]) {
-            cube(size=[7+o,1.2,trackmaster_well_height()+o+o]);
+        translate(v=[2,-.6,-$o]) {
+            cube(size=[7+$o,1.2,trackmaster_well_height()+$o+$o]);
         }
-        translate(v=[4.75,0,-o]) {
-            cylinder(h=trackmaster_well_height()+o+o, r=1.75);
+        translate(v=[4.75,0,-$o]) {
+            cylinder(h=trackmaster_well_height()+$o+$o, r=1.75);
         }
     }
 }
