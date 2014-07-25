@@ -20,7 +20,7 @@ if __name__ == '__main__':
             for straight in ('male', 'female',):
                 s.vars['straight'].set(straight)
                 # build a nice name
-                name = 'track-{0}-straight-{1}-{2}'.format(base, size, straight)
+                name = 'track-standard-{0}-straight-{1}-{2}'.format(base, size, straight)
                 if name in seen:
                     continue
                 print name
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                     for base in ('male', 'female',):
                         s.vars['base'].set(base)
                         # build a nice name
-                        name = 'track-{0}-curve-{1}'.format(base, radius)
+                        name = 'track-standard-{0}-curve-{1}'.format(base, radius)
                         if right != 'none':
                             name += '-right-{0}'.format(right)
                         if left != 'none':
@@ -54,5 +54,5 @@ if __name__ == '__main__':
                         if name in seen:
                             continue
                         print name
-                        s.render_stl(name)
+                        s.render_stl(dest=name, overwrite=False)
                         seen[name] = True
