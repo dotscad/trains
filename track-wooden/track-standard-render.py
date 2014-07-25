@@ -14,7 +14,7 @@ if __name__ == '__main__':
     for size in s.vars['straight_size'].possible.parameters.keys():
         if size == "auto":
             continue
-        s.vars['straight_size'].set(int(s.vars['straight_size'].possible[size]))
+        s.vars['straight_size'].set(s.vars['straight_size'].possible[size])
         for base in ('male', 'female',):
             s.vars['base'].set(base)
             for straight in ('male', 'female',):
