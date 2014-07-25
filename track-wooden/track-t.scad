@@ -1,8 +1,8 @@
 /**
- * Parametric module to create a piece of track for Thomas- and Brio-compatible wooden
- * train sets.  Parameters allow for straight or curved track as well as combinations
- * (switches or points), including recommended measurements based on wooden track for
- * "small" and "large" curves.
+ * Parametric module to create a T-shaped intersection piece of track for Thomas- and
+ * Brio-compatible wooden train sets.  Parameters allow for changing between the two
+ * standard sizes for this shape of track, as well as control over the types of
+ * connectors at each end of the track.
  *
  * To render this shape, you will need
  * [tracklib.scad](http://www.thingiverse.com/thing:216915) installed in the same
@@ -17,7 +17,7 @@
  * @license    http://creativecommons.org/licenses/LGPL/2.1/
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @see        http://www.thingiverse.com/thing:395610
+ * @see        http://www.thingiverse.com/thing:406570
  * @source     https://github.com/dotscad/trains/blob/master/track-wooden/points-track-y.scad
  */
 
