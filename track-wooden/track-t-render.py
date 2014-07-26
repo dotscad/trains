@@ -18,7 +18,7 @@ if __name__ == '__main__':
                 for right in s.vars['right'].possible.parameters.keys():
                     s.vars['right'].set(right)
                     # build a nice name
-                    name = 'track-t-{0}-{1}-left-{2}-right-{3}'.format(radius, base, left, right)
+                    name = 'track-t-stl/track-t-{0}-{1}-left-{2}-right-{3}'.format(radius, base, left, right)
                     if name in seen:
                         continue
                     print name
