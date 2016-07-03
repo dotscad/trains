@@ -32,7 +32,7 @@ left = "female"; // [male,female]
 right = "male"; // [male,female]
 
 // Length of the straight track, or auto to use the best fit for the requested curve radius.
-length = 51; // [auto:auto, 51:xsmall]
+length = 51; // [25:xxxsmall, 40:xxsmall, 51:xsmall]
 
 // Height (one "unit" is 2.5 inches)
 height = 63.5; // [auto:auto, 63.5:one, 127:two, 190.5:three]
@@ -67,25 +67,31 @@ use <tracklib.scad>;
  */
 module render_part(left, right, length, height) {
     column_w = 10;
-    union() {
-        // Track
-        translate([0,0,height])
-            render_track(left, right, length);
-        // Render the track again, slightly lower, to cover up the bottom edge bevel for male/female plugs
-        translate([0,0,height-1])
-            intersection() {
-                translate([wood_width()/4,-length/2,0])
-                    cube([wood_width()/2,length*2, 10]);
+    difference() {
+        union() {
+            // Track
+            translate([0,0,height])
                 render_track(left, right, length);
-            }
-        // Flate base structure
-        render_base(length, base_height);
-        // Vertical riser
-        translate([wood_width()/2-(column_w/2),0,0])
-            render_riser(length, column_w, height);
-        // support for the track and any left/right plugs
-        translate([0,0,height+$o])
-            render_support(left, right, length);
+            // Render the track again, slightly lower, to cover up the bottom edge bevel for male/female plugs
+            translate([0,0,height-1])
+                intersection() {
+                    translate([wood_width()/4,-length/2,0])
+                        cube([wood_width()/2,length*2, 10]);
+                    render_track(left, right, length);
+                }
+            // Flate base structure
+            render_base(length, base_height);
+            // Vertical riser
+            translate([wood_width()/2-(column_w/2),0,0])
+                render_riser(length, column_w, height);
+            // support for the track and any left/right plugs
+            translate([0,0,height+$o])
+                render_support(left, right, length);
+        }
+        // Cut out some space from the support, to save plastic
+        *translate([wood_width()/2-column_w/2-$o,length/2,wood_width()/2+base_height])
+            rotate([0,90,0])
+            cylinder(h=column_w+2*$o, r=(height*.3));
     }
 }
 
@@ -164,20 +170,63 @@ module render_support(left, right, length) {
     w = wood_width()/sqrt(2);
     union() {
         translate([0,0,-w])
-            intersection() {
-                cube([wood_width(),length,w]);
-                translate([0,0,w])
-                    rotate([0,45,0])
-                    cube([w,length,w]);
+            difference() {
+                intersection() {
+                    cube([wood_width(),length,w]);
+                    translate([0,0,w])
+                        rotate([0,45,0])
+                        cube([w,length,w]);
+                }
+                // female side
+                if (right == "female") {
+                    translate([wood_width(),(-w*sqrt(2))/2,w/sqrt(2)-wood_height()])
+                        rotate([0,45,90])
+                        cube([w,wood_width(),w]);
+                }
+                if (left == "female") {
+                   translate([wood_width(),length+(-w*sqrt(2))/2,w/sqrt(2)-wood_height()])
+                        rotate([0,45,90])
+                        cube([w,wood_width(),w]);
+                }
             }
         if (right == "male") {
             translate([0,-wood_plug_neck_length()-wood_plug_radius(),0])
                 render_plug_support();
         }
+        else {
+            translate([0,-5,0])
+                render_cutout_support();
+        }
         if (left == "male") {
             translate([wood_width(),length+wood_plug_neck_length()+wood_plug_radius(),0])
                 rotate([0,0,180])
                 render_plug_support();
+        }
+        else {
+            translate([wood_width(),length+5,0])
+                rotate([0,0,180])
+                render_cutout_support();
+        }
+    }
+}
+
+module render_cutout_support() {
+    w = wood_width()/sqrt(2);
+   translate([0,-1.5,0]) {
+       union()
+       intersection() {
+            translate([wood_width()/2,wood_width()+1,-20])
+                cylinder(h=40, r=wood_width());
+            translate([0,0,-w])
+                intersection() {
+                    cube([wood_width(),w,w]);
+                    translate([0,0,w])
+                        rotate([0,45,0])
+                        cube([w,w,w]);
+                }
+            translate([wood_width(),0,0])
+                rotate([0,45,90])
+                cube([w,wood_width(),w]);
         }
     }
 }
