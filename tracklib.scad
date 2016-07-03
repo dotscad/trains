@@ -28,6 +28,7 @@ function wood_height()           = 12;
 function wood_well_height()      = 9;
 function wood_well_width()       = 5.7;
 function wood_well_spacing()     = 19.25;
+function wood_well_rim()         = (wood_width() - wood_well_spacing() - 2 * wood_well_width())/2;
 function wood_plug_radius()      = 6;
 function wood_plug_neck_length() = 12;
 
@@ -351,23 +352,24 @@ module wood_rails_slope(radius=25, angle=30, bevel_ends=true) {
 
 /**
  * Plug (male) for wooden track, centered on its y axis.
+ * @param float height      Height of the plug to render.  This should be left at the default but can be overridden in special cases.
  */
-module wood_plug() {
+module wood_plug(height = wood_height()) {
     post_w = 6;
     // Render the part
     union() {
         translate(v=[-$o,-post_w/2,0])
             hull() {
                 translate([0,0,1])
-                    cube(size=[$o+wood_plug_neck_length(),post_w,wood_height()-2]);
+                    cube(size=[$o+wood_plug_neck_length(),post_w,height-2]);
                 translate([0,1,0])
-                    cube(size=[$o+wood_plug_neck_length(),post_w-2,wood_height()]);
+                    cube(size=[$o+wood_plug_neck_length(),post_w-2,height]);
         }
         translate(v=[wood_plug_neck_length(),0,0])
             hull() {
                 translate([0,0,1])
-                    cylinder(h=wood_height()-2,r=wood_plug_radius());
-                cylinder(h=wood_height(),r=wood_plug_radius()-bevel_width);
+                    cylinder(h=height-2,r=wood_plug_radius());
+                cylinder(h=height,r=wood_plug_radius()-bevel_width);
         }
     }
 }
