@@ -96,7 +96,6 @@ module render_part(left, right, length, height) {
 }
 
 module render_riser(length, width, height, corner=3) {
-    //cube([column_w,length,height+$o])
     hull() {
         translate([corner,corner,0])
             cylinder(r=corner, h=height);
@@ -168,44 +167,51 @@ module render_track(left, right, length) {
 
 module render_support(left, right, length) {
     w = wood_width()/sqrt(2);
-    union() {
-        translate([0,0,-w])
-            difference() {
-                intersection() {
-                    cube([wood_width(),length,w]);
-                    translate([0,0,w])
-                        rotate([0,45,0])
-                        cube([w,length,w]);
+    difference() {
+        union() {
+            translate([0,0,-w])
+                difference() {
+                    intersection() {
+                        cube([wood_width(),length,w]);
+                        translate([0,0,w])
+                            rotate([0,45,0])
+                            cube([w,length,w]);
+                    }
+                    if (right == "female") {
+                        translate([wood_width(),(-w*sqrt(2))/2,w/sqrt(2)-wood_height()])
+                            rotate([0,45,90])
+                            cube([w,wood_width(),w]);
+                    }
+                    if (left == "female") {
+                       translate([wood_width(),length+(-w*sqrt(2))/2,w/sqrt(2)-wood_height()])
+                            rotate([0,45,90])
+                            cube([w,wood_width(),w]);
+                    }
                 }
-                // female side
-                if (right == "female") {
-                    translate([wood_width(),(-w*sqrt(2))/2,w/sqrt(2)-wood_height()])
-                        rotate([0,45,90])
-                        cube([w,wood_width(),w]);
-                }
-                if (left == "female") {
-                   translate([wood_width(),length+(-w*sqrt(2))/2,w/sqrt(2)-wood_height()])
-                        rotate([0,45,90])
-                        cube([w,wood_width(),w]);
-                }
+            if (right == "male") {
+                translate([0,-wood_plug_neck_length()-wood_plug_radius(),0])
+                    render_plug_support();
             }
-        if (right == "male") {
-            translate([0,-wood_plug_neck_length()-wood_plug_radius(),0])
-                render_plug_support();
+            else {
+                translate([0,-5,0])
+                    render_cutout_support();
+            }
+            if (left == "male") {
+                translate([wood_width(),length+wood_plug_neck_length()+wood_plug_radius(),0])
+                    rotate([0,0,180])
+                    render_plug_support();
+            }
+            else {
+                translate([wood_width(),length+5,0])
+                    rotate([0,0,180])
+                    render_cutout_support();
+            }
         }
-        else {
-            translate([0,-5,0])
-                render_cutout_support();
-        }
-        if (left == "male") {
-            translate([wood_width(),length+wood_plug_neck_length()+wood_plug_radius(),0])
-                rotate([0,0,180])
-                render_plug_support();
-        }
-        else {
-            translate([wood_width(),length+5,0])
-                rotate([0,0,180])
-                render_cutout_support();
+        // Save a little plastic, and make something that looks a tiny bit like a trestle support
+        if (length > 44) {
+            translate([wood_width(),length/2+(-w*sqrt(2))/2,w/sqrt(2)-wood_height()-w-1])
+                rotate([0,45,90])
+                cube([w,wood_width(),w]);
         }
     }
 }
@@ -213,7 +219,6 @@ module render_support(left, right, length) {
 module render_cutout_support() {
     w = wood_width()/sqrt(2);
    translate([0,-1.5,0]) {
-       union()
        intersection() {
             translate([wood_width()/2,wood_width()+1,-20])
                 cylinder(h=40, r=wood_width());
@@ -233,30 +238,28 @@ module render_cutout_support() {
 
 module render_plug_support() {
     w = wood_width()/sqrt(2);
-    union() {
-        // This supports only the plug.  Code left in place in case someone wants to change the design later.
-        * intersection() {
-            translate([wood_width()/2,0,-w+1+$o])
-                rotate([0,0,-90])
-                wood_plug(w+1+$o);
-            translate([wood_width(),-wood_plug_neck_length()-wood_plug_radius(),0])
-                rotate([0,45,90])
-                cube([w,wood_width(),w]);
-        }
-        // This supports everything around/under the plug
-        intersection() {
-            translate([wood_width()/2,wood_width()/2,-20])
-                cylinder(h=40, r=wood_width()/2);
-            translate([0,0,-w])
-                intersection() {
-                    cube([wood_width(),w,w]);
-                    translate([0,0,w])
-                        rotate([0,45,0])
-                        cube([w,w,w]);
-                }
-            translate([wood_width(),0,0])
-                rotate([0,45,90])
-                cube([w,wood_width(),w]);
-        }
+    // This supports only the plug.  Code left in place in case someone wants to change the design later.
+    // intersection() {
+    //     translate([wood_width()/2,0,-w+1+$o])
+    //         rotate([0,0,-90])
+    //         wood_plug(w+1+$o);
+    //     translate([wood_width(),-wood_plug_neck_length()-wood_plug_radius(),0])
+    //         rotate([0,45,90])
+    //         cube([w,wood_width(),w]);
+    // }
+    // This supports everything around/under the plug
+    intersection() {
+        translate([wood_width()/2,.2+wood_width()/2,-20])
+            cylinder(h=40, r=wood_width()/2+.2);
+        translate([0,0,-w])
+            intersection() {
+                cube([wood_width(),w,w]);
+                translate([0,0,w])
+                    rotate([0,45,0])
+                    cube([w,w,w]);
+            }
+        translate([wood_width(),0,0])
+            rotate([0,45,90])
+            cube([w,wood_width(),w]);
     }
 }
