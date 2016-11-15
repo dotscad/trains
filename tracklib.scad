@@ -42,18 +42,15 @@ function trackmaster_plug_neck_length() = 4.75;
 // @todo need to figure out what to call these variables...
 // Bevel size
 bevel_width = 1;
-bevel = $o + bevel_width;
+bevel       = $o + bevel_width;
 function bevel() = bevel;
 
 /* ******************************************************************************
  * Include some other libraries
  * ****************************************************************************** */
 
-// Not sure where the main dotscad files might be, so try to load from a few locations.
-use <../../dotscad/pie.scad>;
-use <../dotscad/pie.scad>;
+// Import dotscad dependency from globally-installed copy
 use <dotscad/pie.scad>;
-use <pie.scad>;
 
 /* ******************************************************************************
  * Examples
@@ -135,7 +132,19 @@ module plug_cutout(radius, neck_length, track_height) {
  * linear_extrude(), and rotate_extrude().
  */
 module wood_track_2d() {
-    square(size = [wood_width(),wood_height()]);
+    bevel_pad = bevel_width*sqrt(.5)*($o/2);
+    difference() {
+        square(size = [wood_width(),wood_height()]);
+        for (i = [ 0 - bevel_pad, wood_width() + bevel_pad]) {
+            for (j = [ 0 - bevel_pad, wood_height() + bevel_pad]) {
+                translate(v=[i,j]) {
+                    rotate(a=[0,0,45]) {
+                        square([bevel,bevel], center=true);
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -171,11 +180,23 @@ module wood_rails_2d() {
  * @param int length Length of track to render.  Standard short wooden length is 53.5mm.
  * @param bool rails False if you do not want to include rails (wheel wells).
  */
-module wood_track(length=53.5, rails=true) {
+module wood_track(length=53.5, rails=true, bevel_ends=true) {
+    bevel_pad = bevel_width*sqrt(.5)*($o/2);
     difference() {
         rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
         if (rails) {
             wood_rails(length);
+        }
+        if (bevel_ends) {
+            for (i = [ 0-bevel_pad, length+bevel_pad]) {
+                for (j=[0-bevel_pad, wood_height()+bevel_pad]) {
+                    translate(v=[i, wood_width()/2, j]) {
+                        rotate(a=[0,45,0]) {
+                            cube(size = [bevel, wood_width(), bevel], center=true);
+                        }
+                    }
+                }
+            }
         }
     }
 }
