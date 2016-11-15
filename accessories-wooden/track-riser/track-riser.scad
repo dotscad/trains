@@ -25,7 +25,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Global] */
+/* [Options] */
 
 // Connector to place each side of the piece.
 left = "female"; // [male,female]

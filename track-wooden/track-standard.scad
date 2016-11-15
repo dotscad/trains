@@ -18,7 +18,7 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
  * @see        http://www.thingiverse.com/thing:395610
- * @source     https://github.com/dotscad/trains/blob/master/track-wooden/points-track-y.scad
+ * @source     https://github.com/dotscad/trains/blob/master/track-wooden/track-standard.scad
  */
 
 /* ******************************************************************************
@@ -26,7 +26,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Global] */
+/* [Options] */
 
 // Connector to place on the base end of the piece.
 base = "female"; // [male,female]

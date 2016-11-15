@@ -24,7 +24,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Global] */
+/* [Options] */
 
 // Length of the straight track.  Standard wooden unit is 53.5mm but you probably don't need more than 20-25.
 length = 25;

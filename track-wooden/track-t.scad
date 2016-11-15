@@ -18,7 +18,7 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
  * @see        http://www.thingiverse.com/thing:406570
- * @source     https://github.com/dotscad/trains/blob/master/track-wooden/points-track-y.scad
+ * @source     https://github.com/dotscad/trains/blob/master/track-wooden/track-t.scad
  */
 
 /* ******************************************************************************
@@ -26,7 +26,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Global] */
+/* [Options] */
 
 // Curve radius.  Sizes provided are standard.
 radius = 126; // [87.5:small, 126:medium]

@@ -27,7 +27,7 @@
 // Customizer parameters and rendering
 //
 
-/* [Global] */
+/* [Options] */
 
 // Render support structure?
 support = true;

@@ -23,7 +23,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Global] */
+/* [Options] */
 
 // Nudge the length shorter, if necessary
 length_nudge = 0; // [0:5]
