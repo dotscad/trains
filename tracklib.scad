@@ -192,7 +192,7 @@ module wood_track(length=53.5, rails=true, bevel_ends=true) {
                 for (j=[0-bevel_pad, wood_height()+bevel_pad]) {
                     translate(v=[i, wood_width()/2, j]) {
                         rotate(a=[0,45,0]) {
-                            cube(size = [bevel, wood_width(), bevel], center=true);
+                            cube(size = [bevel, wood_width()+2*$o, bevel], center=true);
                         }
                     }
                 }
@@ -377,14 +377,15 @@ module wood_rails_slope(radius=25, angle=30, bevel_ends=true) {
  */
 module wood_plug(height = wood_height()) {
     post_w = 6;
+    pad = 1; // padding to account for track bevels
     // Render the part
     union() {
-        translate(v=[-$o,-post_w/2,0])
+        translate(v=[-pad-$o,-post_w/2,0])
             hull() {
                 translate([0,0,1])
-                    cube(size=[$o+wood_plug_neck_length(),post_w,height-2]);
+                    cube(size=[$o+wood_plug_neck_length()+pad,post_w,height-2]);
                 translate([0,1,0])
-                    cube(size=[$o+wood_plug_neck_length(),post_w-2,height]);
+                    cube(size=[$o+wood_plug_neck_length()+pad,post_w-2,height]);
         }
         translate(v=[wood_plug_neck_length(),0,0])
             hull() {
