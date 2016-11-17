@@ -26,7 +26,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Options] */
+/* [parameters] */
 
 // Curve radius.  Sizes provided are standard.
 radius = 126; // [87.5:small, 126:medium]
@@ -52,8 +52,7 @@ render_track(base, left, right, radius);
  * Main module code below:
  * ****************************************************************************** */
 
-// Not sure where tracklib might be, so try to load it from a couple of locations.
-use <../tracklib.scad>;
+// Import tracklib from globally-installed copy
 use <tracklib.scad>;
 
 /*

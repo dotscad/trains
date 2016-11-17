@@ -23,7 +23,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Options] */
+/* [parameters] */
 
 // Nudge the length shorter, if necessary
 length_nudge = 0; // [0:5]
@@ -40,9 +40,8 @@ dogbone();
  * Main module code below:
  * ****************************************************************************** */
 
-// Not sure where tracklib might be, so try to load it from a couple of locations.
-use <../tracklib.scad>; // github clone
-use <tracklib.scad>;    // likely downloaded from thingiverse
+// Import tracklib from globally-installed copy
+use <tracklib.scad>;
 
 module dogbone() {
     union() {

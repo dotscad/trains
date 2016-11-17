@@ -31,7 +31,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Track] */
+/* [parameters] */
 
 // Connector to place on the "left" end of the piece.
 left = "male"; // [male,female]

@@ -26,7 +26,7 @@
  * Unfortunately, Customizer doesn't support multiple .scad files so this won't work.
  * ****************************************************************************** */
 
-/* [Options] */
+/* [parameters] */
 
 // Connector to place on the base end of the piece.
 base = "female"; // [male,female]
@@ -61,8 +61,7 @@ render_track(base, left, straight, right, straight_size, radius, angle);
  * Main module code below:
  * ****************************************************************************** */
 
-// Not sure where tracklib might be, so try to load it from a couple of locations.
-use <../tracklib.scad>;
+// Import tracklib from globally-installed copy
 use <tracklib.scad>;
 
 /*
