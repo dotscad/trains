@@ -18,7 +18,7 @@
  * project, an open collection of modules and Things for 3d printing.  Please
  * check there for the latest versions of this and other related files.
  *
- * @copyright  Chris Petersen, 2014
+ * @copyright  Chris Petersen, 2016
  * @license    http://creativecommons.org/licenses/LGPL/2.1/
  * @license    http://creativecommons.org/licenses/by-sa/3.0/
  *
