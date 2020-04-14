@@ -179,8 +179,10 @@ module wood_rails_2d() {
  * Individual piece of wooden track.  Same gauge as Trackmaster but not the same shape.
  * @param int length Length of track to render.  Standard short wooden length is 53.5mm.
  * @param bool rails False if you do not want to include rails (wheel wells).
+ * @param bool bevel_ends True if you want the ends to be beveled.
+ * @param bool connectors False if you don't want connectors.
  */
-module wood_track(length=53.5, rails=true, bevel_ends=true) {
+module wood_track(length=53.5, rails=true, bevel_ends=true, connectors=true) {
     bevel_pad = bevel_width*sqrt(.5)*($o/2);
     difference() {
         rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
@@ -198,7 +200,16 @@ module wood_track(length=53.5, rails=true, bevel_ends=true) {
                 }
             }
         }
+        if (connectors) {
+            if (length>(wood_plug_radius()*2+wood_plug_neck_length())) {
+                translate([0,wood_width()/2,0]) wood_cutout();
+            }
+        }
     }
+    if (connectors) {
+        translate([length,wood_width()/2,0]) wood_plug();
+    }
+    
 }
 
 /**
