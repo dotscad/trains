@@ -64,9 +64,11 @@ use <dotscad/pie.scad>;
 tracklib_example();
 module tracklib_example($fn=25) {
     // Wood pieces
+    translate([0,50,0])
+    wood_track(100);
     wood_track(10);
-    translate([15,30,0]) wood_plug();
-    translate([15,10,0]) difference() {
+    translate([30,30,0]) wood_plug();
+    translate([30,10,0]) difference() {
        translate([0,-wood_plug_radius()-2]) cube([wood_plug_neck_length() + wood_plug_radius() + 2, wood_plug_radius() * 2 + 4, wood_height()]);
         wood_cutout();
     }
@@ -74,8 +76,8 @@ module tracklib_example($fn=25) {
     translate([-14,-3,0]) rotate([0,0,90+25]) wood_track_slope(25, 30, $fn=120);
     #translate([-29,-10,6]) rotate([30,0,90+25]) wood_track_slope(25, -30, $fn=120);
     // Trackmaster pieces
-    translate([40,30,0]) trackmaster_plug();
-    translate([40,10,0]) difference() {
+    translate([55,30,0]) trackmaster_plug();
+    translate([55,10,0]) difference() {
        translate([0,-trackmaster_plug_radius()-2]) cube([trackmaster_plug_neck_length() + trackmaster_plug_radius() + 2, trackmaster_plug_radius() * 2 + 4, trackmaster_height()]);
        trackmaster_cutout();
     }
