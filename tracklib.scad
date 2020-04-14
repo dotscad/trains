@@ -66,18 +66,17 @@ module tracklib_example($fn=25) {
     // Wood pieces
     translate([0,50,0])
     wood_track(100);
+    translate([0,10,0])
+    rotate([0,0,45])
+    wood_track_arc();
+    
     wood_track(10);
-    translate([30,30,0]) wood_plug();
-    translate([30,10,0]) difference() {
-       translate([0,-wood_plug_radius()-2]) cube([wood_plug_neck_length() + wood_plug_radius() + 2, wood_plug_radius() * 2 + 4, wood_height()]);
-        wood_cutout();
-    }
-    translate([-5,-10,0]) rotate([0,0,90]) wood_track_arc(10, 25, $fn=120);
+    translate([-5,-10,0]) rotate([0,0,90]) wood_track_arc(10, 25, $fn=120, true, false);
     translate([-14,-3,0]) rotate([0,0,90+25]) wood_track_slope(25, 30, $fn=120);
     #translate([-29,-10,6]) rotate([30,0,90+25]) wood_track_slope(25, -30, $fn=120);
     // Trackmaster pieces
-    translate([55,30,0]) trackmaster_plug();
-    translate([55,10,0]) difference() {
+    translate([35,30,0]) trackmaster_plug();
+    translate([35,10,0]) difference() {
        translate([0,-trackmaster_plug_radius()-2]) cube([trackmaster_plug_neck_length() + trackmaster_plug_radius() + 2, trackmaster_plug_radius() * 2 + 4, trackmaster_height()]);
        trackmaster_cutout();
     }
@@ -248,8 +247,9 @@ module wood_rails(length=53.5, bevel_ends=true) {
  * @param int radius Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
  * @param int angle  Angle of track to render.  Standard track angle is 45 degrees.
  * @param bool rails False if you do not want to include rails (wheel wells).
+ * @param bool connectors False if you don't want connectors.
  */
-module wood_track_arc(radius = 245/2, angle=45, rails=true) {
+module wood_track_arc(radius = 245/2, angle=45, rails=true, connectors=true) {
     difference() {
         intersection() {
             pie(radius + wood_width(), angle, wood_height());
@@ -260,6 +260,13 @@ module wood_track_arc(radius = 245/2, angle=45, rails=true) {
         if (rails) {
             wood_rails_arc(radius,angle);
         }
+        if (connectors) {
+             translate([radius+wood_width()/2,0,0]) rotate([0,0,90]) wood_cutout();
+        }
+    }
+    if (connectors) {
+        rotate([0,0,angle]) translate([radius+wood_width()/2,0,0]) 
+            rotate([0,0,90]) wood_plug();
     }
 }
 
