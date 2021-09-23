@@ -179,13 +179,14 @@ module wood_rails_2d() {
  * Individual piece of wooden track.  Same gauge as Trackmaster but not the same shape.
  * @param int length Length of track to render.  Standard short wooden length is 53.5mm.
  * @param bool rails False if you do not want to include rails (wheel wells).
+ * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
  */
 module wood_track(length=53.5, rails=true, bevel_ends=true) {
     bevel_pad = bevel_width*sqrt(.5)*($o/2);
     difference() {
         rotate([90,0,90]) linear_extrude(length, convexity = 10) wood_track_2d();
         if (rails) {
-            wood_rails(length);
+            wood_rails(length, bevel_ends=bevel_ends);
         }
         if (bevel_ends) {
             for (i = [ 0-bevel_pad, length+bevel_pad]) {
@@ -235,8 +236,9 @@ module wood_rails(length=53.5, bevel_ends=true) {
  * @param int radius Radius of inner edge of the trac arc.  Standard track curves are 36cm and 17.5cm diameter.
  * @param int angle  Angle of track to render.  Standard track angle is 45 degrees.
  * @param bool rails False if you do not want to include rails (wheel wells).
+ * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
  */
-module wood_track_arc(radius = 245/2, angle=45, rails=true) {
+module wood_track_arc(radius = 245/2, angle=45, rails=true, bevel_ends=true) {
     difference() {
         intersection() {
             pie(radius + wood_width(), angle, wood_height());
@@ -245,7 +247,7 @@ module wood_track_arc(radius = 245/2, angle=45, rails=true) {
                 wood_track_2d();
         }
         if (rails) {
-            wood_rails_arc(radius,angle);
+            wood_rails_arc(radius,angle,bevel_ends=bevel_ends);
         }
     }
 }
@@ -293,8 +295,9 @@ module wood_rails_arc(radius = 245/2, angle=45, bevel_ends=true) {
  * @param int radius Radius of upper/top edge of the track slope.  Standard values seem to range 24.5-34cm
  * @param int angle  Positive or negative angle of slope to render.  Standard angles seem to range 20-30 degrees.
  * @param bool rails False if you do not want to include rails (wheel wells).
+ * @param bool bevel_ends Bevel the outer edges of the rails.  Set to false if you intend to connect multiple rails together on the same piece of track.
  */
-module wood_track_slope(radius=25, angle=30, rails=true) {
+module wood_track_slope(radius=25, angle=30, rails=true, bevel_ends=true) {
     abs_angle = abs(angle); // convert the negative angle to positive
 
     // Really wish we could use "if" for this kind of stuff....
@@ -313,7 +316,7 @@ module wood_track_slope(radius=25, angle=30, rails=true) {
                     wood_track_2d();
             }
         if (rails) {
-            wood_rails_slope(radius, angle);
+            wood_rails_slope(radius, angle, bevel_ends=bevel_ends);
         }
     }
 }
